@@ -1,6 +1,8 @@
+import { deleteSingleAuthor, getAuthors, getSingleAuthor } from '../api/authorData';
 import { deleteBook, getBooks, getSingleBook } from '../api/bookData';
 import addAuthorForm from '../components/forms/addAuthorForm';
 import addBookForm from '../components/forms/addBookForm';
+import { showAuthors } from '../pages/authors';
 import { showBooks } from '../pages/books';
 
 const domEvents = () => {
@@ -41,7 +43,10 @@ const domEvents = () => {
       // eslint-disable-next-line no-alert
       if (window.confirm('Want to delete?')) {
         console.warn('DELETE AUTHOR', e.target.id);
-        console.warn(e.target.id.split('--'));
+        const [, firebaseKey] = e.target.id.split('--');
+        deleteSingleAuthor(firebaseKey).then(() => {
+          getAuthors().then(showAuthors);
+        });
       }
     }
 
@@ -50,7 +55,13 @@ const domEvents = () => {
       console.warn('ADD AUTHOR');
       addAuthorForm();
     }
+
     // FIXME: ADD CLICK EVENT FOR EDITING AN AUTHOR
+    if (e.target.id.includes('update-author')) {
+      console.warn('EDIT AUTHOR', e.target.id);
+      const [, firebaseKey] = e.target.id.split('--');
+      getSingleAuthor(firebaseKey).then((bookObj) => addAuthorForm(bookObj));
+    }
   });
 };
 
