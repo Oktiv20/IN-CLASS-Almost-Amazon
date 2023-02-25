@@ -1,11 +1,14 @@
-import { deleteSingleAuthor, getAuthors, getSingleAuthor } from '../api/authorData';
+import { getAuthors, getSingleAuthor } from '../api/authorData';
 import { deleteBook, getBooks, getSingleBook } from '../api/bookData';
 import addAuthorForm from '../components/forms/addAuthorForm';
 import addBookForm from '../components/forms/addBookForm';
 import { showAuthors } from '../pages/authors';
 import { showBooks } from '../pages/books';
+import { deleteAuthorBooksRelationship, getBookDetails, getAuthorsDetails } from '../api/mergedData';
+import viewBook from '../pages/viewBook';
+import viewAuthor from '../pages/viewAuthor';
 
-const domEvents = () => {
+function domEvents() {
   document.querySelector('#main-container').addEventListener('click', (e) => {
     // CLICK EVENT FOR DELETING A BOOK
     if (e.target.id.includes('delete-book')) {
@@ -35,7 +38,15 @@ const domEvents = () => {
     // TODO: CLICK EVENT FOR VIEW BOOK DETAILS
     if (e.target.id.includes('view-book-btn')) {
       console.warn('VIEW BOOK', e.target.id);
-      console.warn(e.target.id.split('--'));
+      const [, firebaseKey] = e.target.id.split('--');
+      getBookDetails(firebaseKey).then(viewBook);
+    }
+
+    // TODO: CLICK EVENT FOR VIEW AUTHOR DETAILS
+    if (e.target.id.includes('view-author-btn')) {
+      console.warn('VIEW AUTHOR', e.target.id);
+      const [, firebaseKey] = e.target.id.split('--');
+      getAuthorsDetails(firebaseKey).then(viewAuthor);
     }
 
     // FIXME: ADD CLICK EVENT FOR DELETING AN AUTHOR
@@ -44,7 +55,7 @@ const domEvents = () => {
       if (window.confirm('Want to delete?')) {
         console.warn('DELETE AUTHOR', e.target.id);
         const [, firebaseKey] = e.target.id.split('--');
-        deleteSingleAuthor(firebaseKey).then(() => {
+        deleteAuthorBooksRelationship(firebaseKey).then(() => {
           getAuthors().then(showAuthors);
         });
       }
@@ -63,6 +74,6 @@ const domEvents = () => {
       getSingleAuthor(firebaseKey).then((bookObj) => addAuthorForm(bookObj));
     }
   });
-};
+}
 
 export default domEvents;

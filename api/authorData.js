@@ -11,7 +11,7 @@ const getAuthors = () => new Promise((resolve, reject) => {
     },
   })
     .then((response) => response.json())
-    .then((data) => resolve(Object.values(data)))
+    .then((data) => resolve(Object.values(data))) // resolve(Object.values(data))) is sending back an array of objects (multiple things)
     .catch(reject);
 });
 
@@ -25,7 +25,7 @@ const createAuthor = (payload) => new Promise((resolve, reject) => {
     body: JSON.stringify(payload),
   })
     .then((response) => response.json())
-    .then((data) => resolve(data))
+    .then((data) => resolve(data)) // resolve(data)) is sending back one object
     .catch(reject);
 });
 
@@ -71,14 +71,14 @@ const updateAuthor = (payload) => new Promise((resolve, reject) => {
 
 // TODO: GET A SINGLE AUTHOR'S BOOKS
 const getAuthorBooks = (firebaseKey) => new Promise((resolve, reject) => {
-  fetch(`${endpoint}/authors/${firebaseKey}.json`, {
+  fetch(`${endpoint}/books.json?orderBy="author_id"&equalTo="${firebaseKey}`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
     }, // you technically do not need the options object for GET requests, but using it here for consistency
   })
     .then((response) => response.json())
-    .then((data) => resolve(data)) // will resolve a single object
+    .then((data) => resolve(Object.values(data))) // will resolve a single object
     .catch(reject);
 });
 

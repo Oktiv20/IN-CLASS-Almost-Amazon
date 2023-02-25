@@ -9,7 +9,7 @@ const formEvents = () => {
 
     // CLICK EVENT FOR SUBMITTING FORM FOR ADDING A BOOK
     if (e.target.id.includes('submit-book')) {
-      const payload = {
+      const payload = { // order of payload does not matter
         title: document.querySelector('#title').value,
         description: document.querySelector('#description').value,
         image: document.querySelector('#image').value,
@@ -19,7 +19,7 @@ const formEvents = () => {
       };
 
       createBook(payload).then(({ name }) => {
-        const patchPayLoad = { firebaseKey: name };
+        const patchPayLoad = { firebaseKey: name }; // "name" comes from Postman when patching - pulling the key value for "name" out of the object to send it to the firebaseKey
 
         updateBook(patchPayLoad).then(() => {
           getBooks().then(showBooks);
