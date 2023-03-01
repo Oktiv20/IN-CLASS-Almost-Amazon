@@ -8,7 +8,7 @@ import { deleteAuthorBooksRelationship, getBookDetails, getAuthorsDetails } from
 import viewBook from '../pages/viewBook';
 import viewAuthor from '../pages/viewAuthor';
 
-function domEvents() {
+function domEvents(user) {
   document.querySelector('#main-container').addEventListener('click', (e) => {
     // CLICK EVENT FOR DELETING A BOOK
     if (e.target.id.includes('delete-book')) {
@@ -17,7 +17,7 @@ function domEvents() {
         console.warn('CLICKED DELETE BOOK', e.target.id);
         const [, firebaseKey] = e.target.id.split('--');
         deleteBook(firebaseKey).then(() => {
-          getBooks().then(showBooks);
+          getBooks(user.uid).then(showBooks);
         });
       }
     }
@@ -25,14 +25,14 @@ function domEvents() {
     // TODO: CLICK EVENT FOR SHOWING FORM FOR ADDING A BOOK
     if (e.target.id.includes('add-book-btn')) {
       console.warn('ADD BOOK');
-      addBookForm();
+      addBookForm(user.uid);
     }
 
     // TODO: CLICK EVENT EDITING/UPDATING A BOOK
     if (e.target.id.includes('edit-book-btn')) {
       console.warn('EDIT BOOK', e.target.id);
       const [, firebaseKey] = e.target.id.split('--');
-      getSingleBook(firebaseKey).then((bookObj) => addBookForm(bookObj));
+      getSingleBook(firebaseKey).then((bookObj) => addBookForm(user.uid, bookObj));
     }
 
     // TODO: CLICK EVENT FOR VIEW BOOK DETAILS
@@ -56,7 +56,7 @@ function domEvents() {
         console.warn('DELETE AUTHOR', e.target.id);
         const [, firebaseKey] = e.target.id.split('--');
         deleteAuthorBooksRelationship(firebaseKey).then(() => {
-          getAuthors().then(showAuthors);
+          getAuthors(user.uid).then(showAuthors);
         });
       }
     }
@@ -64,14 +64,14 @@ function domEvents() {
     // FIXME: ADD CLICK EVENT FOR SHOWING FORM FOR ADDING AN AUTHOR
     if (e.target.id.includes('add-author-btn')) {
       console.warn('ADD AUTHOR');
-      addAuthorForm();
+      addAuthorForm(user.uid);
     }
 
     // FIXME: ADD CLICK EVENT FOR EDITING AN AUTHOR
     if (e.target.id.includes('update-author')) {
       console.warn('EDIT AUTHOR', e.target.id);
       const [, firebaseKey] = e.target.id.split('--');
-      getSingleAuthor(firebaseKey).then((bookObj) => addAuthorForm(bookObj));
+      getSingleAuthor(firebaseKey).then((bookObj) => addAuthorForm(user.uid, bookObj));
     }
   });
 }

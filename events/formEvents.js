@@ -3,7 +3,7 @@ import { createBook, getBooks, updateBook } from '../api/bookData';
 import { showAuthors } from '../pages/authors';
 import { showBooks } from '../pages/books';
 
-const formEvents = () => {
+const formEvents = (user) => {
   document.querySelector('#main-container').addEventListener('submit', (e) => {
     e.preventDefault();
 
@@ -16,13 +16,14 @@ const formEvents = () => {
         price: document.querySelector('#price').value,
         author_id: document.querySelector('#author_id').value,
         sale: document.querySelector('#sale').checked,
+        uid: user.uid,
       };
 
       createBook(payload).then(({ name }) => {
         const patchPayLoad = { firebaseKey: name }; // "name" comes from Postman when patching - pulling the key value for "name" out of the object to send it to the firebaseKey
 
         updateBook(patchPayLoad).then(() => {
-          getBooks().then(showBooks);
+          getBooks(user.uid).then(showBooks);
         });
       });
     }
@@ -41,7 +42,7 @@ const formEvents = () => {
       };
       console.warn('CLICKED UPDATE BOOK', e.target.id);
       updateBook(payload).then(() => {
-        getBooks().then(showBooks);
+        getBooks(user.uid).then(showBooks);
       });
     }
 
@@ -51,13 +52,15 @@ const formEvents = () => {
         email: document.querySelector('#email').value,
         first_name: document.querySelector('#first_name').value,
         last_name: document.querySelector('#last_name').value,
+        favorite: document.querySelector('#favorite').checked,
+        uid: user.uid,
       };
 
       createAuthor(payload).then(({ name }) => {
         const patchPayLoad = { firebaseKey: name };
 
         updateAuthor(patchPayLoad).then(() => {
-          getAuthors().then(showAuthors);
+          getAuthors(user.uid).then(showAuthors);
         });
       });
       console.warn('CLICKED SUBMIT AUTHOR');
@@ -70,11 +73,12 @@ const formEvents = () => {
         email: document.querySelector('#email').value,
         first_name: document.querySelector('#first_name').value,
         last_name: document.querySelector('#last_name').value,
+        favorite: document.querySelector('#favorite').checked,
         firebaseKey,
       };
       console.warn('CLICKED UPDATE AUTHOR', e.target.id);
       updateAuthor(payload).then(() => {
-        getAuthors().then(showAuthors);
+        getAuthors(user.uid).then(showAuthors);
       });
     }
   });
